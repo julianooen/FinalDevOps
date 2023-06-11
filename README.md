@@ -10,9 +10,9 @@
 ## Requisitos:
 
 - <a href="https://www.jenkins.io/">Jenkins<a>
-- Packer
-- AWS Cli
-- Terraform
+- <a href="https://developer.hashicorp.com/packer">Packer<a>
+- <a href="https://aws.amazon.com/pt/cli/">AWS Cli<a>
+- <a href="https://www.terraform.io/">Terraform<a>
 
 ## Configurando Jenkins:
 
