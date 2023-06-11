@@ -9,7 +9,7 @@
 
 ## Requisitos:
 
-- Jenkins
+- <a href="https://www.jenkins.io/">Jenkins<a>
 - Packer
 - AWS Cli
 - Terraform
@@ -59,7 +59,7 @@
 
 - Acessando o painel do Kibana:
 
-    - Ao fim da execução do job4 será exibido o dns e basta copiar a colar no navegador para ter acesso.
+    - Ao fim da execução do job4 será exibido o dns e basta copiar a colar no navegador e inserir no fim ":5601" para ter acesso ao kibana.
 
 - Acessando aplicação da calculadora em go:
 
