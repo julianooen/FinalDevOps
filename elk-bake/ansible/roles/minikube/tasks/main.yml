@@ -1,0 +1,166 @@
+---
+- name: install kubectl
+  get_url:
+    url: "https://dl.k8s.io/release/v1.27.1/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: "0755"
+
+- name: install minikube
+  apt:
+    deb: "https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb"
+    state: present
+
+- name: Criar arquivo de serviço do Minikube
+  copy:
+    dest: /etc/systemd/system/minikube.service
+    content: |
+      [Unit]
+      Description=Minikube
+      After=network.target
+      After=docker.service
+
+      [Service]
+      Type=simple
+      User=ubuntu
+      ExecStart=/bin/minikube start --cpus 2 --memory 3000
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Habilitar serviço do Minikube
+  systemd:
+    name: minikube.service
+    enabled: yes
+
+- name: Alterar permissões do arquivo elasticsearch.yaml
+  file:
+    path: /home/ubuntu/elasticsearch.yaml
+    mode: '0755'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Alterar permissões do arquivo kibana.yaml
+  file:
+    path: /home/ubuntu/kibana.yaml
+    mode: '0755'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Alterar permissões do arquivo apm-server.yaml
+  file:
+    path: /home/ubuntu/apm-server.yaml
+    mode: '0755'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Alterar permissões do arquivo status_minikube.sh
+  file:
+    path: /home/ubuntu/status_minikube.sh
+    mode: '0755'
+    owner: ubuntu
+    group: ubuntu
+
+- name: elasticsearch
+  copy:
+    dest: /etc/systemd/system/elasticsearch.service
+    content: |
+      [Unit]
+      Description=elasticsearch
+      After=network.target
+      After=minikube.service
+      Requires=minikube.service
+
+      [Service]
+      Type=simple
+      User=ubuntu
+      ExecStart=/bin/bash -c '/home/ubuntu/status_minikube.sh && kubectl apply -f /home/ubuntu/elasticsearch.yaml'
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Habilitar serviço do elasticshearch
+  systemd:
+    name: elasticsearch.service
+    enabled: yes
+
+- name: kibana
+  copy:
+    dest: /etc/systemd/system/kibana.service
+    content: |
+      [Unit]
+      Description=kibana
+      After=network.target
+      After=minikube.service
+
+      [Service]
+      Type=simple
+      User=ubuntu
+      ExecStart=/bin/bash -c '/home/ubuntu/status_minikube.sh && kubectl apply -f /home/ubuntu/kibana.yaml'
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Habilitar serviço do kibana
+  systemd:
+    name: kibana.service
+    enabled: yes
+
+- name: port-forward kibana
+  copy:
+    dest: /etc/systemd/system/forwardkibana.service
+    content: |
+      [Unit]
+      Description=forwardkibana
+      After=network.target
+      After=minikube.service
+
+      [Service]
+      User=ubuntu
+      ExecStart=/usr/local/bin/kubectl port-forward --address 0.0.0.0 services/kibana 5601:5601
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: apm-server
+  copy:
+    dest: /etc/systemd/system/apm-server.service
+    content: |
+      [Unit]
+      Description=apm-server
+      After=network.target
+      After=minikube.service
+
+      [Service]
+      Type=simple
+      User=ubuntu
+      ExecStart=/bin/bash -c '/home/ubuntu/status_minikube.sh && kubectl apply -f /home/ubuntu/apm-server.yaml'
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Habilitar serviço do apm-server
+  systemd:
+    name: apm-server.service
+    enabled: yes
+
+- name: port-forward apm-server
+  copy:
+    dest: /etc/systemd/system/forwardapm-server.service
+    content: |
+      [Unit]
+      Description=forwardapm-server
+      After=network.target
+      After=minikube.service
+
+      [Service]
+      User=ubuntu
+      ExecStart=/usr/local/bin/kubectl port-forward --address 0.0.0.0 services/apm-server 8200:8200
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd services
+  systemd:
+    daemon_reload: yes

@@ -1,0 +1,7 @@
+---
+- name: config GoLang
+  hosts: localhost
+  become: true
+  roles:
+    - golang
+    - app

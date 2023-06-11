@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    stages{
+        stage('Deploying ELK') {
+            steps{
+                sh """
+                cd elk-deploy
+                terraform init
+                terraform apply --auto-approve -var="sg_elk=${env.sg_elk}" -var="keypair_name=${env.keypair_name}"
+                """
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    stages{
+        stage('Baking ELK') {
+            steps{
+                sh """
+                cd elk-bake
+                packer build -var "key_file=${env.key_file}" -var "keypair_name=${keypair_name}" .
+                """
+            }
+        }
+    }
+}

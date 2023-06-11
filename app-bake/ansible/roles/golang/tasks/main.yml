@@ -1,0 +1,22 @@
+---
+- name: Baixar o arquivo do Go
+  get_url:
+    url: "https://go.dev/dl/go1.20.3.linux-amd64.tar.gz"
+    dest: "/tmp/go1.20.3.linux-amd64.tar.gz"
+
+- name: Remover versões antigas do Go
+  command: rm -rf /usr/local/go
+
+- name: Extrair arquivo tar do Go
+  unarchive:
+    src: "/tmp/go1.20.3.linux-amd64.tar.gz"
+    dest: "/usr/local"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Adicionar Go ao PATH
+  lineinfile:
+    path: "/etc/profile"
+    line: "export PATH=$PATH:/usr/local/go/bin"
+    state: present
+    create: yes

@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    stages{
+        stage('Deploying Redis') {
+            steps{
+                sh """
+                cd redis-deploy
+                terraform init
+                terraform apply --auto-approve -var="sg_redis=${env.sg_redis}" -var="keypair_name=${env.keypair_name}"
+                """
+            }
+        }
+    }
+}

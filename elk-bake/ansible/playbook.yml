@@ -1,0 +1,9 @@
+- name: Install Minikube
+  hosts: localhost
+  become: true
+  vars:
+    minikube_version: 1.21.0
+  roles:
+    - requirements
+    - docker
+    - minikube

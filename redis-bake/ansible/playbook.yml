@@ -1,0 +1,8 @@
+
+- name: teste
+  hosts: localhost
+  become: true
+  vars:
+    redis_port: 6379
+  roles: 
+    - redis

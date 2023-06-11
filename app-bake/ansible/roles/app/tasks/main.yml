@@ -1,0 +1,12 @@
+---
+- name: Compilar o código do calc
+  shell: go build
+
+- name: Mover o arquivo de serviço do calc
+  shell: sudo mv calc.service /etc/systemd/system
+
+- name: Ativar o serviço calc
+  shell: sudo systemctl enable calc.service
+  
+- name: Iniciar o serviço calc
+  shell: sudo systemctl start calc.service

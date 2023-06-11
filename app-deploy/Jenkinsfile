@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    stages{
+        stage('Deploying Calculator') {
+            steps{
+                sh """
+                cd app-deploy
+                terraform init
+                terraform apply --auto-approve -var="sg_app=${env.sg_app}" -var="keypair_name=${env.keypair_name}"
+                """
+            }
+        }
+    }
+}

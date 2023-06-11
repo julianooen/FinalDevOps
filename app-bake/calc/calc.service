@@ -1,0 +1,13 @@
+[Unit]
+Description="Go_calc"
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/ubuntu/calc
+TimeoutStartSec=0
+User=ubuntu
+
+[Install]
+WantedBy=multi-user.target

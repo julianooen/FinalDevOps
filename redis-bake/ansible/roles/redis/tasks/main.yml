@@ -1,0 +1,57 @@
+---
+- name: Instalar lsb-release, curl e gpg
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - lsb-release
+    - curl
+    - gpg
+
+- name: Importar chave GPG do Redis
+  become: true
+  shell: curl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+
+- name: Adicionar repositório do Redis
+  become: true
+  shell: echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+
+- name: Atualizar cache de pacotes
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Instalar o Redis
+  become: true
+  apt:
+    name: redis-server
+    state: present
+
+- name: Configure Redis to set supervised
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: 'supervised'
+    line: 'supervised systemd'
+    state: present
+
+- name: Configure Redis to listen on all interfaces
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^bind '
+    line: 'bind 0.0.0.0'
+    state: present
+
+- name: Configure Redis to set protected-mode no
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: 'protected-mode'
+    line: 'protected-mode no'
+    state: present
+
+- name: Enable redis
+  systemd:
+    name: "redis-server"
+    state: started
+    enabled: yes
+...

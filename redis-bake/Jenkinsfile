@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+
+    stages{
+        stage('Baking Redis') {
+            steps{
+                sh """
+                cd redis-bake
+                packer build -var "key_file=${env.key_file}" -var "keypair_name=${keypair_name}" .
+                """
+            }
+        }
+    }
+}
