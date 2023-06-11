@@ -35,7 +35,7 @@
 2. Colocar o nome do Job e escolher a opção 'Pipeline'
 3. Em seguida no campo Pipeline definition escolher a opção 'Pipeline script from SCM'
 4. No campo SCM escolher a opção 'Git'
-5. No campo Repository URL inserir: 'https://github.com/julianooen/FinalD.git'
+5. No campo Repository URL inserir: 'https://github.com/julianooen/FinalDevOps.git'
 6. Em Branch Specifier preencher com '*/master'
 7. Em Script Path preencher com 'Jenkinsfile' conforme será visto em "Ordem de execução dos jobs"
 
